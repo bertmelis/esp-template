@@ -173,7 +173,7 @@ void loop() {
   }
 
   if (espMqttManagerHelpers::updated) {
-    espMqttManager::mqttClient.publish(BASETOPIC "/$system/status", 1, true, "reboot");
+    espMqttManager::mqttClient.publish(BASETOPIC "/" DEVICEID "/$system/status", 1, true, "reboot");
     espMqttManager::disconnect(true);
   }
 
