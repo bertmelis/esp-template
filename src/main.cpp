@@ -12,6 +12,7 @@ the LICENSE file.
 #include <espMqttManager.h>
 
 #include "HassDiscoveryAbbreviations.h"
+#include "Version.h"
 
 #define BASETOPIC "basetopic"
 #define DEVICEID "deviceid"
@@ -42,6 +43,8 @@ void onSetupSession() {
     device[DISCOVERY_DEVICE_IDENTIFIERS][0] = DEVICEID;
     device[DISCOVERY_DEVICE_MANUFACTURER] = BASETOPIC;
     device[DISCOVERY_DEVICE_NAME] = DEVICENAME;
+    device[DISCOVERY_DEVICE_HW_VERSION] = hardware_version_major "." hardware_version_minor "." hardware_version_patch;
+    device[DISCOVERY_DEVICE_SW_VERSION] = firmware_version_major "." firmware_version_minor "." firmware_version_patch;
     size_t len = measureJson(jsonDoc) + 1;
     char* jsonStr = new char[len];
     if (jsonStr) {
@@ -68,6 +71,8 @@ void onSetupSession() {
     device[DISCOVERY_DEVICE_IDENTIFIERS][0] = DEVICEID;
     device[DISCOVERY_DEVICE_MANUFACTURER] = BASETOPIC;
     device[DISCOVERY_DEVICE_NAME] = DEVICENAME;
+    device[DISCOVERY_DEVICE_HW_VERSION] = hardware_version_major "." hardware_version_minor "." hardware_version_patch;
+    device[DISCOVERY_DEVICE_SW_VERSION] = firmware_version_major "." firmware_version_minor "." firmware_version_patch;
     size_t len = measureJson(jsonDoc) + 1;
     char* jsonStr = new char[len];
     if (jsonStr) {
@@ -94,6 +99,8 @@ void onSetupSession() {
     device[DISCOVERY_DEVICE_IDENTIFIERS][0] = DEVICEID;
     device[DISCOVERY_DEVICE_MANUFACTURER] = BASETOPIC;
     device[DISCOVERY_DEVICE_NAME] = DEVICENAME;
+    device[DISCOVERY_DEVICE_HW_VERSION] = hardware_version_major "." hardware_version_minor "." hardware_version_patch;
+    device[DISCOVERY_DEVICE_SW_VERSION] = firmware_version_major "." firmware_version_minor "." firmware_version_patch;
     size_t len = measureJson(jsonDoc) + 1;
     char* jsonStr = new char[len];
     if (jsonStr) {
@@ -106,8 +113,8 @@ void onSetupSession() {
 }
 
 void sendStats() {
-  char payload[21] = {'\0'};  // uptime: 18446744073709551615, signal: 100, heap: 250000
-  snprintf(payload, sizeof(payload), "%" PRIu64, uptime.getUptime());
+  char payload[18] = {'\0'};  // uptime: 18446744073709551615 / 1000, signal: 100, heap: 250000
+  snprintf(payload, sizeof(payload), "%" PRIu64, uptime.getUptime() / 1000);
   espMqttManager::mqttClient.publish(BASETOPIC "/" DEVICEID "/$system/uptime", 0, false, payload);
   espMqttManager::mqttClient.publish(BASETOPIC "/" DEVICEID "/$system/uptimereadable", 0, false, uptime.getUptimeStr());
   snprintf(payload, sizeof(payload), "%u", espMqttManagerHelpers::signalQuality());
@@ -173,7 +180,7 @@ void loop() {
   }
 
   if (espMqttManagerHelpers::updated) {
-    espMqttManager::mqttClient.publish(BASETOPIC "/$system/status", 1, true, "reboot");
+    espMqttManager::mqttClient.publish(BASETOPIC "/" DEVICEID "/$system/status", 1, true, "reboot");
     espMqttManager::disconnect(true);
   }
 
