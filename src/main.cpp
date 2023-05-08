@@ -140,7 +140,7 @@ void onMqttConnected() {
 }
 
 void onMqttDisconnected(espMqttClientTypes::DisconnectReason reason) {
-  Serial.printf("MQTT disconnected: %u\r\n", static_cast<uint8_t>(reason));
+  Serial.printf("MQTT disconnected: %u - %s\r\n", static_cast<uint8_t>(reason), espMqttClientTypes::disconnectReasonToString(reason));
 }
 
 void onMqttMessage(const espMqttClientTypes::MessageProperties& properties, const char* topic, const uint8_t* payload, size_t len, size_t index, size_t total) {
