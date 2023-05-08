@@ -180,6 +180,7 @@ void loop() {
   }
 
   if (espMqttManagerHelpers::updated) {
+    espMqttManagerHelpers::updated = false;  // send reboot and disconnect only once
     espMqttManager::mqttClient.publish(BASETOPIC "/" DEVICEID "/$system/status", 1, true, "reboot");
     espMqttManager::disconnect(true);
   }
