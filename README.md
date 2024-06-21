@@ -7,7 +7,7 @@ Adds discovery for Home Assistant over MQTT.
 
 I use platformio.
 
-- edit `/config.json` (optionally add credentials)
+- edit `data/config.json` (optionally add credentials)
 - edit `main.cpp`
 - build and upload:
 
